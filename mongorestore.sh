@@ -2,16 +2,11 @@
 
 #ACB
 BACKUP_DIR="/home/ubuntu/mongodump/dump/backup"
-LOG_FILE="/var/traveloka/log/mongorestore_script.log"
+LOG_FILE="/path/to/log/mongorestore_script.log"
 
 mongo_restore()
 {
   echo "restoring dumped database(s)"
-  #if $dumpAll; then
-  #  mongorestore_command=`ssh $staging mongorestore --drop /home/ubuntu/mongodump/dump/backup/`
-  #else
-  #  mongorestore_command=`ssh $staging mongorestore --drop /home/ubuntu/mongodump/dump/backup/$fileName`
-  #fi
   echo "ssh $staging mongorestore --db $fileName --drop /home/ubuntu/mongodump/dump/backup/"
   echo "do something $staging $fileName"
 }
@@ -77,10 +72,6 @@ help_function()
 {
   echo "type ./mongorestore.sh [database_name] [staging_target] to restore a single database"
   echo "type ./mongorestore.sh [staging_target] to restore all mongo databases"
-  dumpAll=false
-  staging='staging19'
-  tar_name="traveloka-user.tar.gz"
-  copy_and_extract_db $dumpAll $tar_name $staging
 }
 
 restore_single_mongo()
@@ -113,7 +104,6 @@ restore_all_by_default()
 {
   echo "archieving all dumped databases..."
   command=`ssh staging06 tar -czf /home/ubuntu/mongodump/dump/mongodump-all-staging06.tar.gz /home/ubuntu/mongodump/dump/backup/`
-  #command=`ssh staging06 tar -czf $BACKUP_DIR/mongodump-staging06.tar.gz $BACKUP_DIR/`
   if [ $? -ne 0 ]; then
     echo "Errors occur, check log at /var/traveloka/log/mongorestore_script.log"
     echo  "$command" >> $LOG_FILE
